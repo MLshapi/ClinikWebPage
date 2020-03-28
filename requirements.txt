@@ -1,0 +1,13 @@
+Web Site
+
+- Basic interface 
+- The queries listed above (and their results)
+- modify the data in your database through your interface
+	- add new patients 
+	- schedule new appointments 
+	- modify and delete existing appointments.
+- Feature for DBAs: a text
+area (probably on a different page) in which a user can type an SQL statement and
+execute it on the database. Results of the executed statement should be displayed in a
+logical way. 
+http://localhost/Comp353/
