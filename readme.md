@@ -9,6 +9,7 @@ How to set up:
 8) go to php my admin type http://localhost/phpmyadmin/ in the search bar of your browser
 9) import database the file is tables.db in the Comp353 folder
 10) to access the website type http://localhost/ClinicWebPage/ in the search bar of your browser
+11) Please create a new branch from Master and start developping from it, when you are done make a pull request to merge into master
 
 What needs to be done:
 1) Implement the queries in the website (the skeleton is ready, waiting for the queries)
