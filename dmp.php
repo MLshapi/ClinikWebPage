@@ -49,8 +49,63 @@
 	<br>
 	<button type="submit" name="submit">Add Patient</button>
 </form>
-
-
-
+              <h3> Schedule a new appointment </h3>
+              <form action="includes/newApp.php" method="POST">
+              <label>
+              Enter doctor name:
+              <input type="text" name="docFName" placeholder="FirstName">
+              <input type="text" name="docLName" placeholder="LastName">
+              </label>
+              <br>
+              <input type="date" name="appDate">
+              <br>
+              <label>
+              Patient name:
+              <input type="text" name="first" placeholder="FirstName">
+              <input type="text" name="last" placeholder="LastName">
+              </label>
+              <button type="submit" name="submit">Schedule appointment</button>
+              </form>
+              <h3> Delete existing appointment </h3>
+              <form action="includes/delApp.php" method="POST">
+              <label>
+              Enter doctor name:
+              <input type="text" name="docFName" placeholder="FirstName">
+              <input type="text" name="docLName" placeholder="LastName">
+              </label>
+              <br>
+              <input type="date" name="appDate">
+              <br>
+              <label>
+              Patient name:
+              <input type="text" name="first" placeholder="FirstName">
+              <input type="text" name="last" placeholder="LastName">
+              </label>
+              <button type="submit" name="submit">Delete Appointment</button>
+              </form>
+              <h3> Modify existing appointment </h3>
+              <form action="includes/modApp.php" method="POST">
+              <label>
+              Enter old appointment information
+              <br>
+              Doctor name:
+              <input type="text" name="docFName" placeholder="FirstName">
+              <input type="text" name="docLName" placeholder="LastName">
+              </label>
+              <br>
+              <input type="date" name="appDate">
+              <br>
+              <label>
+              Patient name:
+              <input type="text" name="first" placeholder="FirstName">
+              <input type="text" name="last" placeholder="LastName">
+              </label>
+              <br>
+              <label>
+              Select a new date for appointment:
+                  <input type="date" name="nDate">
+                  </label>
+                  <button type="submit" name="submit">Modify appointment</button>
+                  </form>
 </body>
 </html>
