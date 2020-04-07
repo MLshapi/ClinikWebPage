@@ -46,7 +46,7 @@
 <button id="appointmentBtn" onclick="displayTable('appointmentTable')">Show All Appointments</button>
 <button id="billBtn" onclick="displayTable('billTable')">Show All Bills</button>
 <button id="clinicBtn" onclick="displayTable('clinicTable')">Show All Clinics</button>
-<button id="dentistBtn" onclick="displayTable('dentistTable')">Show All Dentists</button>
+<button id="dentistBtn" onclick="displayTable('dentistTable')">Show All Employees</button>
 <button id="patientBtn" onclick="displayTable('patientTable')">Show All Patients</button>
 <button id="treatmentBtn" onclick="displayTable('treatmentTable')">Show All Treatments</button>
 <br>

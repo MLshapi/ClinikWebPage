@@ -1,10 +1,10 @@
 <?php
-	$appointmentTable = array('a_id','p_id','d_id','c_id', 'date');
-	$billTable = array('b_id','p_id','t_id','price', 'paid');
-	$clinicTable = array('c_id','c_name','location');
-	$dentistTable = array('d_id','first_name','last_name','c_id');
-	$patientTable = array('p_id','first_name','last_name');
-	$treatmentTable = array('t_id','a_id','p_id','d_id', 'description','price');
+	$appointmentTable = array('AppointmentID','PatientID','AppointmentDateTime','ClinicID', 'DentistEmployeeID', 'CreatedByEmployeeID', 'IsMissedAppointment');
+	$billTable = array('BillID','AppointmentID','PaidAmount','PaymentDateTime', 'BillProcessedByEmployeeID');
+	$clinicTable = array('ClinicID','ClinicName','ClinicAddress', 'ClinicCity', 'ClinicProvince', 'ClinicPostalCode', 'ClinicCountry');
+	$dentistTable = array('EmployeeID','EmployeeFirstName','EmployeeLastName','EmployeeTitleID', 'ClinicID');
+	$patientTable = array('PatientID','PatientFirstName','PatientLastName', 'PatientDOB');
+	$treatmentTable = array('TreatmentID','TreatmentName','TreatmentStandardPrice');
 	function printTable($sql,$arrayOfTable,$tableName, $funcConn) {
     	$result = mysqli_query($funcConn, $sql);
 		$resultNumRows = mysqli_num_rows($result);
@@ -66,8 +66,8 @@
 	{
 		global $dentistTable;
 		global $conn;
-		$sql = "SELECT * FROM dentist;";
-		printTable($sql, $dentistTable,"Dentist" ,$conn);
+		$sql = "SELECT * FROM employee;";
+		printTable($sql, $dentistTable,"Employee" ,$conn);
 	}
 	function displayAllPatients()
 	{
