@@ -17,7 +17,7 @@
 		  li {float: left;}
 		  li a {display: block; color: white; text-align: center; padding: 14px 16px; text-decoration: none;}
 		  li a:hover {background-color: #111;}
-		  .aaa, .bbb, .ccc {
+		  .op {
     			display:none;
 			}
 }
@@ -80,15 +80,15 @@
 	  <option value="6">Querie 6</option>
 	  <option value="7">Querie 7</option>
 	</select>
-	<br>
-	<!--label class="2 op">Appointment date:</label><input type="date" name="appDate" class="2 op">
-	<br>
+	<br >
+	<label class="2 op">Appointment date:</label><input type="date" name="appDate" class="2 op">
+	<br class="2 op">
 	<label class="2 op" >Enter a Clinic Id or enter a Clinic Name</label>
-	<br>
+	<br class="2 op">
 	<label class="2 op">Clinic Id: </label><input type="text" class="2 op">
-	<br>
+	<br class="2 op">
 	<label class="2 op">Clinic Name: </label><input type="text" class="2 op">
-	<br-->
+	<br class="2 op">
 	<button type="submit" name="submit">Display Query</button>
 </form>
 
