@@ -17,6 +17,9 @@
 		  li {float: left;}
 		  li a {display: block; color: white; text-align: center; padding: 14px 16px; text-decoration: none;}
 		  li a:hover {background-color: #111;}
+		  .aaa, .bbb, .ccc {
+    			display:none;
+			}
 }
 	 </style>
 	 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -28,6 +31,23 @@
 		  } else {
 		    x.style.display = "none";
 		  }
+		}
+		/*
+			@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2
+			followed this https://stackoverflow.com/questions/24809661/show-extra-form-input-fields-when-an-html-select-option-is-clicked
+
+			in css i have this
+			.aaa, .bbb, .ccc {
+    			display:none;
+			}
+
+			
+		*/
+		function showExtra(option)
+		{
+		   var divClass = option.value;
+		   $('.op').css({ display: 'none' });
+		   $('.' + divClass).css({ display: 'inline' });
 		}
 	 </script>
 </head>
@@ -50,7 +70,38 @@
 <button id="patientBtn" onclick="displayTable('patientTable')">Show All Patients</button>
 <button id="treatmentBtn" onclick="displayTable('treatmentTable')">Show All Treatments</button>
 <br>
+<form action="index.php" method="POST">
+	<select name="queries" style="width: 250px;" onchange="showExtra(this)">
+	  <option value="1">Querie 1</option>
+	  <option value="2">Querie 2</option>
+	  <option value="3">Querie 3</option>
+	  <option value="4">Querie 4</option>
+	  <option value="5">Querie 5</option>
+	  <option value="6">Querie 6</option>
+	  <option value="7">Querie 7</option>
+	</select>
+	<br>
+	<!--label class="2 op">Appointment date:</label><input type="date" name="appDate" class="2 op">
+	<br>
+	<label class="2 op" >Enter a Clinic Id or enter a Clinic Name</label>
+	<br>
+	<label class="2 op">Clinic Id: </label><input type="text" class="2 op">
+	<br>
+	<label class="2 op">Clinic Name: </label><input type="text" class="2 op">
+	<br-->
+	<button type="submit" name="submit">Display Query</button>
+</form>
 
+<?php
+	if(isset($_POST)){
+		if((!empty($_POST)) && $_POST['queries'])
+		{
+			$queryOption = $_POST['queries'];
+			echo "<h4>Query Number $queryOption</h4>";
+			displayQueryNumber($queryOption);
+		}
+	}
+?>
 
 
 <div id="appointmentTable" style="visibility=hidden;">
@@ -90,8 +141,24 @@
 	?>
 
 </div>
+<select  onchange="showExtra(this)">
+  <option>Select</option>
+  <option value="aaa">AAA</option>
+  <option value="bbb">BBB</option>
+  <option value="ccc">CCC</option>
+</select>
 
-
-
+<div class="aaa bbb op">
+  <input name="xxx" type="text" placeholder="aaa bbb" />
+</div>
+ <div class="aaa ccc op">
+  <input name="yyy" type="text" placeholder="aaa ccc"/>
+</div>
+  <div class="bbb ccc op">
+<input name="zzz" type="text" placeholder="bbb ccc"/>
+</div>
+<div class="aaa op">
+<input name="zzz" type="text" placeholder="aaa"/>
+</div>
 </body>
 </html>

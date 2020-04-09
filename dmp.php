@@ -64,6 +64,7 @@
               <input type="text" name="first" placeholder="FirstName">
               <input type="text" name="last" placeholder="LastName">
               </label>
+              <br>
               <button type="submit" name="submit">Schedule appointment</button>
               </form>
               <h3> Delete existing appointment </h3>
@@ -81,6 +82,7 @@
               <input type="text" name="first" placeholder="FirstName">
               <input type="text" name="last" placeholder="LastName">
               </label>
+              <br>
               <button type="submit" name="submit">Delete Appointment</button>
               </form>
               <h3> Modify existing appointment </h3>
@@ -105,6 +107,7 @@
               Select a new date for appointment:
                   <input type="date" name="nDate">
                   </label>
+                  <br>
                   <button type="submit" name="submit">Modify appointment</button>
                   </form>
 </body>
