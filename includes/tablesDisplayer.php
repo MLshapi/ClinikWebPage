@@ -43,44 +43,53 @@
 	function printQueryTable($sql,$funcConn)
 	{
 		$result = mysqli_query($funcConn, $sql);
-		$resultNumRows = mysqli_num_rows($result);
 		$toPrint = "";
-		if($resultNumRows > 0)
+		if($result)
 		{
-			$toPrint .= "<table>";
-			$i = 0;
-			while($row = mysqli_fetch_assoc($result))
+			$resultNumRows = mysqli_num_rows($result);
+		
+			if($resultNumRows > 0)
 			{
-				$toPrint .= "<tr>";
-				$attribute = "";
-				$data = "";
-				foreach($row as $k => $v){
-					if($i == 0)
-					{
-						$attribute .= "<td>" . $k . "</td>";
-					}
-					
-					$data .= "<td>" . $v . "</td>";
-					
+				$toPrint .= "<table>";
+				$i = 0;
+				while($row = mysqli_fetch_assoc($result))
+				{
+					$toPrint .= "<tr>";
+					$attribute = "";
+					$data = "";
+					foreach($row as $k => $v){
+						if($i == 0)
+						{
+							$attribute .= "<td>" . $k . "</td>";
+						}
+						
+						$data .= "<td>" . $v . "</td>";
+						
 
-			 	}
-			 	if($i == 0)
-			 	{
-			 		$toPrint .= $attribute;
-			 		$toPrint .= "</tr>";
-			 		$toPrint .= "<tr>";
-			 	}
-			 	$toPrint .= $data;
-				$toPrint .= "</tr>";
-				$i++;
+				 	}
+				 	if($i == 0)
+				 	{
+				 		$toPrint .= $attribute;
+				 		$toPrint .= "</tr>";
+				 		$toPrint .= "<tr>";
+				 	}
+				 	$toPrint .= $data;
+					$toPrint .= "</tr>";
+					$i++;
+				}
+				$toPrint .= "</table>";
+
 			}
-			$toPrint .= "</table>";
-
+			else
+			{
+				$toPrint .= "<br><h2>No result</h2>";
+			}
 		}
 		else
 		{
 			$toPrint .= "<br><h2>No result</h2>";
 		}
+		
 		
 		echo $toPrint;
 	}
@@ -182,9 +191,13 @@
 					W.WeekNumber;";
 		printQueryTable($sql, $conn);
 	}
-	function displayQueryThree()
+	function displayQueryThree($post)
 	{
 		global $conn;
+		$appDate = $post['appDate'] ?? '';
+		$clinicId = $post['clinicId'] ?? 0;
+		$clinicName = $post['clinicName'] ?? '';
+
 		$sql = "SELECT
 					a.AppointmentID,
 				    e.EmployeeID,
@@ -202,12 +215,21 @@
 					date(a.AppointmentDateTime) = data($) AND (c.ClinicID = $ OR c.ClinicName = $); ";
 		printQueryTable($sql, $conn);
 	}
-	function displayQueryFour()
+	function displayQueryFour($post)
 	{
 		global $conn;
+		$patientId = $post['patientId'] ?? '0';
+		$patientFName = $post['patientFName'] ?? '';
+		$patientLName = $post['patientLName'] ?? '';
+		if($patientId == '')
+			$patientId = 0;
+		echo $patientId;
+		echo $patientFName . "," . $patientLName;
 		$sql = "SELECT
 					a.AppointmentID,
-				    a.PatientID,
+					p.PatientID,
+				    p.PatientFirstName,
+				    p.PatientLastName,
 				    a.CreatedByEmployeeID,
 				    a.IsMissedAppointment,
 				    c.ClinicName,
@@ -223,7 +245,7 @@
 					INNER JOIN .patient p On
 						p.PatientID = a.PatientID
 				WHERE
-					p.PatientID =$  OR (p.PatientFirstName =$ && p.PatientLastName =$); ";
+					p.PatientID = " . $patientId ." OR (p.PatientFirstName = '" . $patientFName . "' && p.PatientLastName = '" . $patientLName . "');";
 		printQueryTable($sql, $conn);
 	}
 	function displayQueryFive()
@@ -245,9 +267,12 @@
 					P.PatientID;";
 		printQueryTable($sql, $conn);
 	}
-	function displayQuerySix()
+	function displayQuerySix($post)
 	{
 		global $conn;
+		$appId = $post['appId'] ?? 0;
+		if($appId == '')
+			$appId = 0;
 		$sql = "SELECT
 					t.TreatmentID,
 				    t.TreatmentName,
@@ -270,7 +295,7 @@
 				    LEFT JOIN employee ee
 				    ON ee.EmployeeID = bi.TreatmentExecutedByEmployeeID
 				WHERE
-					a.AppointmentID = 1;";
+					a.AppointmentID = $appId;";
 		printQueryTable($sql, $conn);
 	}
 	function displayQuerySeven()
@@ -316,7 +341,7 @@
 	}
 
 
- 	function displayQueryNumber($queryOption)
+ 	function displayQueryNumber($queryOption,array $post)
  	{
 
 		switch($queryOption) {
@@ -327,16 +352,16 @@
 				displayQueryTwo();
 			break;
 			case 3:
-				displayQueryThree();
+				displayQueryThree($post);
 			break;
 			case 4:
-				displayQueryFour();
+				displayQueryFour($post);
 			break;
 			case 5:
 				displayQueryFive();
 			break;
 			case 6:
-				displayQuerySix();
+				displayQuerySix($post);
 			break;
 			case 7:
 				displayQuerySeven();

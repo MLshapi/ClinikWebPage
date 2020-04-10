@@ -32,17 +32,6 @@
 		    x.style.display = "none";
 		  }
 		}
-		/*
-			@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2
-			followed this https://stackoverflow.com/questions/24809661/show-extra-form-input-fields-when-an-html-select-option-is-clicked
-
-			in css i have this
-			.aaa, .bbb, .ccc {
-    			display:none;
-			}
-
-			
-		*/
 		function showExtra(option)
 		{
 		   var divClass = option.value;
@@ -70,8 +59,9 @@
 <button id="patientBtn" onclick="displayTable('patientTable')">Show All Patients</button>
 <button id="treatmentBtn" onclick="displayTable('treatmentTable')">Show All Treatments</button>
 <br>
+<br>
 <form action="index.php" method="POST">
-	<select name="queries" style="width: 250px;" onchange="showExtra(this)">
+	<select name="queries" style="width: 250px;height:30px;" onchange="showExtra(this)">
 	  <option value="1">Querie 1</option>
 	  <option value="2">Querie 2</option>
 	  <option value="3">Querie 3</option>
@@ -81,14 +71,20 @@
 	  <option value="7">Querie 7</option>
 	</select>
 	<br >
-	<label class="2 op">Appointment date:</label><input type="date" name="appDate" class="2 op">
-	<br class="2 op">
-	<label class="2 op" >Enter a Clinic Id or enter a Clinic Name</label>
-	<br class="2 op">
-	<label class="2 op">Clinic Id: </label><input type="text" class="2 op">
-	<br class="2 op">
-	<label class="2 op">Clinic Name: </label><input type="text" class="2 op">
-	<br class="2 op">
+	<label class="3 op">Appointment date:</label><input type="date" name="appDate" class="3 op">
+	<br class="3 op">
+	<label class="6 op">Appointment Id: </label><input type="text" name="appId" class="6 op">
+	<label class="3 op" >Enter a Clinic Id or enter a Clinic Name</label>
+	<label class="4 op" >Enter a Patient Id or enter a Patient Name</label>
+	<br class="4 3 op">
+	<label class="4 op">Patient Id: </label><input type="text" class="4 op" name="patientId">
+	<label class="3 op">Clinic Id: </label><input type="text" class="3 op" name="clinicId">
+	<br class="4 3 op">
+	<label class="4 op">Patient First Name: </label><input type="text" class="4 op" name="patientFName">
+	<label class="3 op">Clinic Name: </label><input type="text" class="3 op" name="clinicName">
+	<br class="4 op">
+	<label class="4 op">Patient Last Name: </label><input type="text" class="4 op" name="patientLName">
+	<br class="6 4 3 op">
 	<button type="submit" name="submit">Display Query</button>
 </form>
 
@@ -98,7 +94,7 @@
 		{
 			$queryOption = $_POST['queries'];
 			echo "<h4>Query Number $queryOption</h4>";
-			displayQueryNumber($queryOption);
+			displayQueryNumber($queryOption,$_POST);
 		}
 	}
 ?>
@@ -140,25 +136,6 @@
 		displayAllTreatments();
 	?>
 
-</div>
-<select  onchange="showExtra(this)">
-  <option>Select</option>
-  <option value="aaa">AAA</option>
-  <option value="bbb">BBB</option>
-  <option value="ccc">CCC</option>
-</select>
-
-<div class="aaa bbb op">
-  <input name="xxx" type="text" placeholder="aaa bbb" />
-</div>
- <div class="aaa ccc op">
-  <input name="yyy" type="text" placeholder="aaa ccc"/>
-</div>
-  <div class="bbb ccc op">
-<input name="zzz" type="text" placeholder="bbb ccc"/>
-</div>
-<div class="aaa op">
-<input name="zzz" type="text" placeholder="aaa"/>
 </div>
 </body>
 </html>
