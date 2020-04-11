@@ -138,6 +138,7 @@
 	function displayQueryOne()
 	{
 		global $conn;
+		$appId = $post['appId'] ?? 0;
 		$sql = "SELECT 
 					e.EmployeeID,
 				    e.EmployeeFirstName,
@@ -153,66 +154,31 @@
 					et.EmployeeTitle = 'Dentist';";
 		printQueryTable($sql, $conn);
 	}
-	function displayQueryTwo()
+	function displayQueryTwo($post)
 	{
 		global $conn;
-		$sql = "WITH cteSequence AS
-				(
-					SELECT 1 AS ID UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8
-				),
-
-				cteWeeks AS
-				(
-					SELECT
-						MAKEDATE(2020,ROW_NUMBER() OVER (ORDER BY a.ID, b.ID, c.ID)) AS Date,
-						WEEKOFYEAR(MAKEDATE(2020,ROW_NUMBER() OVER (ORDER BY a.ID, b.ID, c.ID))) AS WeekNumber,
-				        YEAR(MAKEDATE(2020,ROW_NUMBER() OVER (ORDER BY a.ID, b.ID, c.ID))) AS DateYear
-					FROM
-						cteSequence a
-						CROSS JOIN cteSequence b
-				        CROSS JOIN cteSequence c
-				)
-
-				SELECT
-					W.WeekNumber,
-				    MIN(W.Date) AS WeekStartDate,
-				    MAX(W.Date) AS WeekEndDate,
-				    CASE
-						WHEN MIN(W.Date) = MAX(W.Date) THEN DATE_FORMAT(MIN(W.Date), '%M %d, %Y')
-				        ELSE CONCAT('From ', DATE_FORMAT(MIN(W.Date), '%M %d, %Y'), ' to ', DATE_FORMAT(MAX(W.Date), '%M %d, %Y'))
-					END AS WeekName
-				FROM
-					cteWeeks W
-				WHERE
-					W.DateYear = 2020
-				GROUP BY
-					W.WeekNumber
-				ORDER BY
-					W.WeekNumber;";
+		$dentistID = $post['dentistID'] ?? 0;
+		
+		$sql = "SELECT 
+					a.DentistEmployeeID, e.EmployeeFirstName, a.AppointmentID,a.AppointmentDateTime, p.PatientFirstName, b.PaidAmount
+				FROM 
+					appointment as a, employee as e, patient as p, bill as b
+				WHERE 
+					a.DentistEmployeeID = $dentistID AND e.EmployeeID = a.DentistEmployeeID AND p.PatientID =a.PatientID AND WEEK(a.AppointmentDateTime) =  WEEK('$date') AND a.AppointmentID = b.AppointmentID;";
 		printQueryTable($sql, $conn);
 	}
 	function displayQueryThree($post)
 	{
 		global $conn;
-		$appDate = $post['appDate'] ?? '';
+		$date = $post['date'] ?? 0;
 		$clinicId = $post['clinicId'] ?? 0;
-		$clinicName = $post['clinicName'] ?? '';
 
-		$sql = "SELECT
-					a.AppointmentID,
-				    e.EmployeeID,
-					concat(e.EmployeeFirstName + ' ' + e.EmployeeLastName) AS DentistName,
-				    concat(p.PatientFirstName + ' ' + p.PatientLastName) AS PatientName
+		$sql = "SELECT 
+					a.AppointmentID, c.ClinicName, a.AppointmentDateTime, e.EmployeeFirstName
 				FROM
-					nc.appointment a
-				    INNER JOIN nc.Employee e ON
-						e.EmployeeID = a.DentistEmployeeID
-					INNER JOIN nc.clinic c ON
-						e.ClinicID = c.ClinicID
-					INNER JOIN nc.patient p On
-						p.PatientID = a.PatientID
+					clinic as c, appointment as a, employee as e
 				WHERE
-					date(a.AppointmentDateTime) = data($) AND (c.ClinicID = $ OR c.ClinicName = $); ";
+					c.ClinicID = $clinicId AND DAY(a.appointmentDateTime) = DAY('$date') AND e.EmployeeID = a.DentistEmployeeID;";
 		printQueryTable($sql, $conn);
 	}
 	function displayQueryFour($post)
@@ -349,7 +315,7 @@
 				displayQueryOne();
 			break;
 			case 2:
-				displayQueryTwo();
+				displayQueryTwo($post);
 			break;
 			case 3:
 				displayQueryThree($post);

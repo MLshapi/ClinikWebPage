@@ -48,6 +48,7 @@
     <li><a href="index.php">Select Queries</a></li>
     <li><a href="dmp.php">Data Manipulation Page</a></li>
     <li><a href="dba.php">Database Administrator Page</a></li>
+	<li><a href="billing.php">Billing Page</a></li>
   </ul>
 </nav>
 <br>
@@ -71,17 +72,19 @@
 	  <option value="7">Querie 7</option>
 	</select>
 	<br >
-	<label class="3 op">Appointment date:</label><input type="date" name="appDate" class="3 op">
+	<label class="2 op">Dentist ID:</label><input type="text" name="dentistID" class="2 op">
+	<br class="2 op">
+	<label class="2 op">Date:</label><input type="date" name="date" class="2 op">
+	<br class="2 op">
+	<label class="3 op">Appointment date:</label><input type="date" name="date" class="3 op">
 	<br class="3 op">
+	<label class="3 op">Clinic Id: </label><input type="text" class="3 op" name="clinicId">
 	<label class="6 op">Appointment Id: </label><input type="text" name="appId" class="6 op">
-	<label class="3 op" >Enter a Clinic Id or enter a Clinic Name</label>
 	<label class="4 op" >Enter a Patient Id or enter a Patient Name</label>
 	<br class="4 3 op">
 	<label class="4 op">Patient Id: </label><input type="text" class="4 op" name="patientId">
-	<label class="3 op">Clinic Id: </label><input type="text" class="3 op" name="clinicId">
 	<br class="4 3 op">
 	<label class="4 op">Patient First Name: </label><input type="text" class="4 op" name="patientFName">
-	<label class="3 op">Clinic Name: </label><input type="text" class="3 op" name="clinicName">
 	<br class="4 op">
 	<label class="4 op">Patient Last Name: </label><input type="text" class="4 op" name="patientLName">
 	<br class="6 4 3 op">
@@ -100,38 +103,38 @@
 ?>
 
 
-<div id="appointmentTable" style="visibility=hidden;">
+<div id="appointmentTable" style="visibility=hidden;display:none;">
 	<?php
 		displayAllAppointments();
 	?>
 
 </div>
-<div id="billTable">
+<div id="billTable" style="display:none;">
 	<?php
 		displayAllBills();
 	?>
 
 </div>
-<div id="clinicTable">
+<div id="clinicTable" style="display:none;">
 	<?php
 		displayAllClinics();
 
 	?>
 
 </div>
-<div id="dentistTable">
+<div id="dentistTable" style="display:none;">
 	<?php
 		displayAllDentists();
 	?>
 
 </div>
-<div id="patientTable">
+<div id="patientTable" style="display:none;">
 	<?php
 		displayAllPatients();
 	?>
 
 </div>
-<div id="treatmentTable">
+<div id="treatmentTable" style="display:none;">
 	<?php
 		displayAllTreatments();
 	?>
