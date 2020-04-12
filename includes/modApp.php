@@ -16,4 +16,4 @@
 	$sql = "UPDATE appointment SET AppointmentDateTime = '$nDate' WHERE PatientID = '$arr_patient[0]' AND DentistEmployeeID = '$arr_dentist[0]' AND AppointmentDateTime  = '$appDate';";
     mysqli_query($conn, $sql);
 	
-	//header("Location: ../dmp.php");
+	header("Location: ../dmp.php");
