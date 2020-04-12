@@ -157,28 +157,30 @@
 	function displayQueryTwo($post)
 	{
 		global $conn;
+		$date = $post['date1'] ?? 0;
 		$dentistID = $post['dentistID'] ?? 0;
 		
-		$sql = "SELECT 
-					a.DentistEmployeeID, e.EmployeeFirstName, a.AppointmentID,a.AppointmentDateTime, p.PatientFirstName, b.PaidAmount
-				FROM 
-					appointment as a, employee as e, patient as p, bill as b
-				WHERE 
-					a.DentistEmployeeID = $dentistID AND e.EmployeeID = a.DentistEmployeeID AND p.PatientID =a.PatientID AND WEEK(a.AppointmentDateTime) =  WEEK('$date') AND a.AppointmentID = b.AppointmentID;";
+		$sql = "SELECT
+				a.AppointmentID, p.PatientFirstName, a.AppointmentDateTime, e.employeeFirstName
+				FROM
+				appointment as a
+				INNER JOIN patient p ON a.PatientID = p.PatientID
+				INNER JOIN employee e ON e.EmployeeID = a.DentistEmployeeID
+				WHERE a.DentistEmployeeID = '$dentistID' AND WEEK(a.AppointmentDateTime) = WEEK('$date');";
 		printQueryTable($sql, $conn);
+		
 	}
 	function displayQueryThree($post)
 	{
 		global $conn;
 		$date = $post['date'] ?? 0;
-		$clinicId = $post['clinicId'] ?? 0;
-
+		echo "$date";
 		$sql = "SELECT 
-					a.AppointmentID, c.ClinicName, a.AppointmentDateTime, e.EmployeeFirstName
+					a.AppointmentID, c.ClinicName, a.AppointmentDateTime, e.EmployeeFirstName, p.patientFirstName
 				FROM
-					clinic as c, appointment as a, employee as e
+					clinic as c, appointment as a, employee as e, patient as p
 				WHERE
-					c.ClinicID = $clinicId AND DAY(a.appointmentDateTime) = DAY('$date') AND e.EmployeeID = a.DentistEmployeeID;";
+					DAY(a.appointmentDateTime) = DAY('$date') AND a.ClinicID = c.ClinicID AND e.EmployeeID = a.DentistEmployeeID AND p.PatientID = a.PatientID;";
 		printQueryTable($sql, $conn);
 	}
 	function displayQueryFour($post)
@@ -267,46 +269,19 @@
 	function displayQuerySeven()
 	{
 		global $conn;
-		$sql = "WITH AllBills AS
-				(
-					SELECT
-						p.PatientID,
-						CONCAT(p.PatientFirstName, ' ', p.PatientLastName) AS PatientFullName,
-						a.AppointmentID,
-						DATE_FORMAT(a.AppointmentDateTime, '%b, %d %Y %h:%i %p') AS AppointmentDateTime,
-						c.ClinicID,
-						concat(c.ClinicAddress, ' ', c.ClinicCity, ' ', c.ClinicProvince, ' ', c.ClinicPostalCode, ' ',c.ClinicCountry) AS ClinicAddress,
-						SUM(bi.TreatmentPrice*bi.TreatmentUnitCount) AS BilledAmount,
-						COALESCE(b.PaidAmount, 0) AS PaidAmount
-					FROM
-						bill b
-						INNER JOIN appointment a 
-						ON b.AppointmentID = a.AppointmentID
-						INNER JOIN patient p
-						ON p.PatientID = a.PatientID
-						INNER JOIN billitem bi
-						ON bi.BillID = b.BillID
-						INNER JOIN clinic c
-						ON c.ClinicID = a.ClinicID
-					GROUP BY
-						p.PatientID,
-						CONCAT(p.PatientFirstName, ' ', p.PatientLastName),
-						a.AppointmentID,
-						DATE_FORMAT(a.AppointmentDateTime, '%b, %d %Y %h:%i %p'),
-						c.ClinicID,
-						concat(c.ClinicAddress, ' ', c.ClinicCity, ' ', c.ClinicProvince, ' ', c.ClinicPostalCode, ' ',c.ClinicCountry),
-						COALESCE(b.PaidAmount, 0)
-				)
-					SELECT
-						ab.PatientID, ab.PatientFullName, ab.AppointmentID, ab.AppointmentDateTime, ab.ClinicID, ab.ClinicAddress, ab.BilledAmount, ab.PaidAmount
-					FROM
-						AllBills ab
-					WHERE
-						ab.BilledAmount <> ab.PaidAmount;";
+		$sql = "SELECT b.BillID, b.AppointmentID, concat(p.PatientFirstName, ' ' , p.PatientLastName) AS 'Patient Name', b.PaidAmount AS 'TotalAmount', b.isPaid, bi.TreatmentPrice, t.treatmentName
+				FROM
+				bill as b
+				INNER JOIN billitem bi ON b.BillID = bi.BillID
+				INNER JOIN treatment t ON bi.TreatmentID = t.TreatmentID
+				INNER JOIN appointment a ON b.AppointmentID = a.AppointmentID
+				INNER JOIN patient p ON p.PatientID = a.PatientID
+				WHERE b.isPaid = 1
+				ORDER BY b.BillID;";
 		printQueryTable($sql, $conn);
 	}
 
-
+		
  	function displayQueryNumber($queryOption,array $post)
  	{
 

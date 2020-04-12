@@ -38,6 +38,7 @@
     <li><a href="index.php">Select Queries</a></li>
     <li><a href="dmp.php">Data Manipulation Page</a></li>
     <li><a href="dba.php">Database Administrator Page</a></li>
+	<li><a href="billing.php">Billing Page</a></li>
   </ul>
 </nav>
 <br>

@@ -72,13 +72,14 @@
 	  <option value="7">Querie 7</option>
 	</select>
 	<br >
+	<label class="2 op">Get details of all appointments for a given dentist for a specific week. </label>
+	<br class="2 op">
 	<label class="2 op">Dentist ID:</label><input type="text" name="dentistID" class="2 op">
 	<br class="2 op">
-	<label class="2 op">Date:</label><input type="date" name="date" class="2 op">
+	<label class="2 op">Appoitnment Date:</label><input type="date" name="date1" class="2 op">
 	<br class="2 op">
 	<label class="3 op">Appointment date:</label><input type="date" name="date" class="3 op">
 	<br class="3 op">
-	<label class="3 op">Clinic Id: </label><input type="text" class="3 op" name="clinicId">
 	<label class="6 op">Appointment Id: </label><input type="text" name="appId" class="6 op">
 	<label class="4 op" >Enter a Patient Id or enter a Patient Name</label>
 	<br class="4 3 op">
@@ -103,7 +104,7 @@
 ?>
 
 
-<div id="appointmentTable" style="visibility=hidden;display:none;">
+<div id="appointmentTable" style="visibility=hidden;dislay:none;">
 	<?php
 		displayAllAppointments();
 	?>
