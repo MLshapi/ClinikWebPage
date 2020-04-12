@@ -51,8 +51,12 @@
   </label>
   <br>
   <label>
-    Enter Treatment ID:
-    <input type="text" name="treatmentID" placeholder="TreatmentID">      
+    Enter Treatment ID's
+	<br>
+	Treatment 1 ID:
+    <input type="text" name="treatmentID" placeholder="TreatmentID">  
+	<input type="text" name="treatmentID2" placeholder="TreatmentID"> 
+	<input type="text" name="treatmentID3" placeholder="TreatmentID"> 
   </label>
   <br>
   <button type="submit" name="submit">Create Bill</button>
@@ -81,15 +85,40 @@ if(isset($_POST['submit']))
 {
 	$appID = $_POST['appID'];
 	$treatmentID = $_POST['treatmentID'];
+	$treatmentID2 = $_POST['treatmentID2'];
+	$treatmentID3 = $_POST['treatmentID3'];
+	
+	$totalPrice = 0;
+	$tPrice = 0;
+	$tPrice2 = 0;
+	$tPrice3 = 0;
 	
 	$sql1 = "SELECT TreatmentStandardPrice FROM treatment WHERE TreatmentID = '$treatmentID';";
     $result = mysqli_query($conn, $sql1);
 	$row = $result->fetch_assoc();
 	$tPrice = $row['TreatmentStandardPrice'];
 	
+	if($treatmentID2 != '')
+	{
+		$sqlTreatment = "SELECT TreatmentStandardPrice FROM treatment WHERE TreatmentID = '$treatmentID2';";
+		$resultTreatment = mysqli_query($conn, $sqlTreatment);
+		$rowTreatment = $resultTreatment->fetch_assoc();
+		$tPrice2 = $rowTreatment['TreatmentStandardPrice'];
+	}
+	
+	if($treatmentID3 != '')
+	{
+		$sqlTreatment2 = "SELECT TreatmentStandardPrice FROM treatment WHERE TreatmentID = '$treatmentID3';";
+		$resultTreatment2 = mysqli_query($conn, $sqlTreatment2);
+		$rowTreatment2 = $resultTreatment2->fetch_assoc();
+		$tPrice3 = $rowTreatment2['TreatmentStandardPrice'];
+	}
+	
+	$totalPrice = $tPrice + $tPrice2 + $tPrice3;
+	
 	$today = date("Y/m/d");
 	$sql = "INSERT into bill(`AppointmentID`,`PaidAmount`,`PaymentDateTime`,`BillProcessedByEmployeeID`) VALUES 
-			('$appID' , '$tPrice','$today', 6);";
+			('$appID' , '$totalPrice','$today', 6);";
     mysqli_query($conn, $sql);
 	
 	$sql2 = "SELECT MAX(BillID) as bID FROM bill;";
@@ -97,7 +126,7 @@ if(isset($_POST['submit']))
 	$row2 = $result2->fetch_assoc();
 	$billID = $row2['bID'];
 	
-	$sql3 = "SELECT AppointmentDateTime FROM appointment WHERE AppointmentID` = '$appID';";
+	$sql3 = "SELECT AppointmentDateTime FROM appointment WHERE AppointmentID = '$appID';";
     $result3 = mysqli_query($conn, $sql3);
 	$row3 = $result3->fetch_assoc();
 	$appDate = $row3['AppointmentDateTime'];
@@ -107,7 +136,22 @@ if(isset($_POST['submit']))
 			('$billID' , '$treatmentID', '$tPrice', 1, 7, '1990-01-07', 3, '$appDate' );";
     mysqli_query($conn, $sql4);
 
+	if($treatmentID2 != '')
+	{
+		$sql5 = "INSERT into billitem(`BillID`,`TreatmentID`,`TreatmentPrice`,`TreatmentUnitCount`,`TreatmentAssignedByEmployeeID`,`TreatmentAssignedDateTime`,`TreatmentExecutedByEmployeeID`,`TreatmentExecutedDateTime`) 
+			VALUES 
+			('$billID' , '$treatmentID2', '$tPrice2', 1, 7, '1990-01-07', 3, '$appDate' );";
+		mysqli_query($conn, $sql5);
+	}
+	if($treatmentID3 != '')
+	{
+		$sql5 = "INSERT into billitem(`BillID`,`TreatmentID`,`TreatmentPrice`,`TreatmentUnitCount`,`TreatmentAssignedByEmployeeID`,`TreatmentAssignedDateTime`,`TreatmentExecutedByEmployeeID`,`TreatmentExecutedDateTime`) 
+			VALUES 
+			('$billID' , '$treatmentID3', '$tPrice3', 1, 7, '1990-01-07', 3, '$appDate' );";
+		mysqli_query($conn, $sql5);
+	}
 	
+	$totalPrice = 0;
 }
 
 ?>
