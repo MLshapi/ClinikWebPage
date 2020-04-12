@@ -47,6 +47,8 @@
 	<input type="text" name="first" placeholder="FirstName">
 	<br>
 	<input type="text" name="last" placeholder="LastName">
+  <br>
+  <label>Date of Birth: <input type="date" name="dob"></label>
 	<br>
 	<button type="submit" name="submit">Add Patient</button>
 </form>
