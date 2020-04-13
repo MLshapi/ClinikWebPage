@@ -1,115 +1,181 @@
-CREATE TABLE `clinic`(
-	`c_id` INT NOT NULL AUTO_INCREMENT,
-	`c_name` VARCHAR(25) NOT NULL,
-	`location` TEXT NOT NULL,
-	PRIMARY KEY(`c_id`)
+CREATE TABLE `appointment`
+(
+  `AppointmentID` 			int NOT NULL AUTO_INCREMENT,
+  `PatientID` 				int NOT NULL,
+  `AppointmentDateTime` 	datetime NOT NULL,
+  `ClinicID` 				int NOT NULL,
+  `DentistEmployeeID`		int NULL,
+  `CreatedByEmployeeID` 	int NOT NULL,
+  `IsMissedAppointment` 	tinyint DEFAULT NULL,
+  PRIMARY KEY (`AppointmentID`)
 );
 
-CREATE TABLE `patient`(
-	`p_id` INT NOT NULL AUTO_INCREMENT,
-	`first_name` VARCHAR(25) NOT NULL,
-	`last_name` VARCHAR(25) NOT NULL,
-	PRIMARY KEY(`p_id`)
+CREATE TABLE `bill` 
+(
+  `BillID` 						int NOT NULL AUTO_INCREMENT,
+  `AppointmentID` 				int NOT NULL,
+  `PaidAmount` 					decimal(10,2) DEFAULT NULL,
+  `PaymentDateTime` 			datetime DEFAULT NULL,
+  `BillProcessedByEmployeeID`   int DEFAULT NULL,
+  PRIMARY KEY (`BillID`)
 );
 
-CREATE TABLE `dentist`(
-	`d_id` INT NOT NULL AUTO_INCREMENT,
-	`first_name` VARCHAR(25) NOT NULL,
-	`last_name` VARCHAR(25) NOT NULL,
-	`c_id` INT NOT NULL,
-	PRIMARY KEY(`d_id`)
+CREATE TABLE `billitem` 
+(
+  `BillItemID` 						int NOT NULL AUTO_INCREMENT,
+  `BillID` 							int NOT NULL,
+  `TreatmentID` 					int NOT NULL,
+  `TreatmentPrice` 					decimal(10,2) NOT NULL,
+  `TreatmentUnitCount` 				int NOT NULL,
+  `TreatmentAssignedByEmployeeID` 	int NOT NULL,
+  `TreatmentAssignedDateTime` 		datetime NOT NULL,
+  `TreatmentExecutedByEmployeeID` 	int NOT NULL,
+  `TreatmentExecutedDateTime` 		datetime DEFAULT NULL,
+  PRIMARY KEY (`BillItemID`)
 );
 
-CREATE TABLE `appointment`(
-	`a_id` INT NOT NULL AUTO_INCREMENT,
-`p_id` INT NOT NULL,
-	`d_id` INT NOT NULL,
-	`c_id` INT NOT NULL,
-	`date` DATE NOT NULL,
-	PRIMARY KEY(`a_id`)
+CREATE TABLE `clinic` 
+(
+  `ClinicID` 					int NOT NULL AUTO_INCREMENT,
+  `ClinicName` 					varchar(45) DEFAULT NULL,
+  `ClinicAddress` 				varchar(100) DEFAULT NULL,
+  `ClinicCity` 					varchar(45) DEFAULT NULL,
+  `ClinicProvince` 				varchar(45) DEFAULT NULL,
+  `ClinicPostalCode` 			varchar(10) DEFAULT NULL,
+  `ClinicCountry`			    varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`ClinicID`)
 );
 
-CREATE TABLE `treatment`(
-	`t_id` INT NOT NULL AUTO_INCREMENT,
-	`a_id` INT NOT NULL,
-`p_id` INT NOT NULL,
-	`d_id` INT NOT NULL,
-	`description` TEXT NOT NULL,
-	`price` DOUBLE NOT NULL,
-	PRIMARY KEY(`t_id`)
+CREATE TABLE `employee` 
+(
+  `EmployeeID` 			int NOT NULL AUTO_INCREMENT,
+  `EmployeeFirstName` 	varchar(45) DEFAULT NULL,
+  `EmployeeLastName` 	varchar(45) DEFAULT NULL,
+  `EmployeeTitleID` 	int NOT NULL,
+  `ClinicID` 			int NOT NULL,
+  PRIMARY KEY (`EmployeeID`)
 );
 
-CREATE TABLE `bill`(
-	`b_id` INT NOT NULL AUTO_INCREMENT,
-`p_id` INT NOT NULL,
-	`t_id` INT NOT NULL,
-	`price` DOUBLE NOT NULL,
-`paid` TINYINT(1) NOT NULL DEFAULT(0),
-	PRIMARY KEY(`b_id`)
+CREATE TABLE `employeetitle` 
+(
+  `EmployeeTitleID` 		int NOT NULL AUTO_INCREMENT,
+  `EmployeeTitle` 			varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`EmployeeTitleID`)
 );
 
-ALTER TABLE `dentist`
-ADD FOREIGN KEY (`c_id`) REFERENCES clinic(`c_id`);
+CREATE TABLE `patient` (
+  `PatientID` 				int NOT NULL AUTO_INCREMENT,
+  `PatientFirstName` 		varchar(45) NOT NULL,
+  `PatientLastName` 		varchar(45) NOT NULL,
+  `PatientDOB` 				date DEFAULT NULL,
+  PRIMARY KEY (`PatientID`)
+);
+
+CREATE TABLE `treatment` (
+  `TreatmentID` 			int NOT NULL AUTO_INCREMENT,
+  `TreatmentName` 			varchar(45) NOT NULL,
+  `TreatmentStandardPrice` 	decimal(10,2) NOT NULL,
+  PRIMARY KEY (`TreatmentID`)
+);
+
+
+
+ALTER TABLE `employee`
+ADD FOREIGN KEY (`EmployeeTitleID`) REFERENCES employeetitle(`EmployeeTitleID`),
+ADD FOREIGN KEY (`ClinicID`) REFERENCES clinic(`ClinicID`);
 
 ALTER TABLE `appointment`
-ADD FOREIGN KEY (`p_id`) REFERENCES patient(`p_id`),
-ADD FOREIGN KEY (`d_id`) REFERENCES dentist(`d_id`),
-ADD FOREIGN KEY (`c_id`) REFERENCES clinic(`c_id`);
-
-
-ALTER TABLE `treatment`
-ADD FOREIGN KEY (`a_id`) REFERENCES appointment(`a_id`),
-ADD FOREIGN KEY (`p_id`) REFERENCES patient(`p_id`),
-ADD FOREIGN KEY (`d_id`) REFERENCES dentist(`d_id`);
+ADD FOREIGN KEY (`PatientID`) REFERENCES patient(`PatientID`),
+ADD FOREIGN KEY (`ClinicID`) REFERENCES clinic(`ClinicID`),
+ADD FOREIGN KEY (`DentistEmployeeID`) REFERENCES employee(`EmployeeID`),
+ADD FOREIGN KEY (`CreatedByEmployeeID`) REFERENCES employee(`EmployeeID`);
 
 ALTER TABLE `bill`
-ADD FOREIGN KEY (`p_id`) REFERENCES patient(`p_id`),
-ADD FOREIGN KEY (`t_id`) REFERENCES treatment(`t_id`);
+ADD FOREIGN KEY (`AppointmentID`) REFERENCES appointment(`AppointmentID`),
+ADD FOREIGN KEY (`BillProcessedByEmployeeID`) REFERENCES employee(`EmployeeID`);
+
+ALTER TABLE `billitem`
+ADD FOREIGN KEY (`BillID`) REFERENCES bill(`BillID`),
+ADD FOREIGN KEY (`TreatmentID`) REFERENCES treatment(`TreatmentID`),
+ADD FOREIGN KEY (`TreatmentAssignedByEmployeeID`) REFERENCES employee(`EmployeeID`),
+ADD FOREIGN KEY (`TreatmentExecutedByEmployeeID`) REFERENCES employee(`EmployeeID`);
 
 
-INSERT INTO clinic(`c_id`,`c_name`,`location`)
+INSERT INTO `employeetitle` (`EmployeeTitleID`, `EmployeeTitle`) VALUES
+(1,'Dentist'),
+(2,'Dentist Assistant'),
+(3,'Receptionist');
+
+
+INSERT INTO `clinic` (`ClinicName`, `ClinicAddress`, `ClinicCity`, `ClinicProvince`, `ClinicPostalCode`, `ClinicCountry`) VALUES 
+('Clinic A', '123 Street abc', 'City A', 'Province A', '123456', 'Country A'),
+('Clinic B', '456 Street def', 'City B', 'Province B', '784565', 'Country B');
+
+
+INSERT INTO `employee` (`EmployeeFirstName`, `EmployeeLastName`, `EmployeeTitleID`, `ClinicID`)
 VALUES
-(1, 'Dental Clinic' , '333 Montreal Av. Est'),
-(2, 'Save Teeth' , '636  Montreal Av. West'),
-(3, 'Clean Smile' , '466 Laval St. Est'),
-(4, 'Say Cheese' , '666 Montreal Av. South'),
-(5, 'Floss' , '3468 Montreal Av. Est'),
-(6, 'Sweet Tooth' , '388 Montreal Av. Est'),
-(7, 'Brush' , '3688 Montreal Av. Est'),
-(8, 'White Teeth' , '33 Montreal Av. Est'),
-(9, 'Fresh Breath' , '8845 Montreal Av. Est'),
-(10, 'Good Dental' , '8853 Montreal Av. Est');
-
-INSERT INTO dentist(`d_id`,`first_name`,`last_name`,`c_id`)
-VALUES
-(1, 'Bob' , 'Dentist' , 1),
-	(2, 'John' , 'Doe' , 2),
-	(3, 'Richard' , 'Gauthier' , 3),
-	(4, 'Pierre' , 'Guy' , 4),
-	(5, 'Alfred' , 'White' , 5),
-	(6, 'Anne' , 'Carron' , 6),
-	(7, 'Stephen' , 'Harvey' , 7),
-	(8, 'Nathalie' , 'Dudette' , 8),
-	(9, 'Jerry' , 'King' , 9),
-	(10, 'Sonia' , 'LaFille' , 10);
-
-INSERT INTO patient(`p_id`,`first_name`,`last_name`)
-VALUES
-(1, 'Stefan' , 'Bosco'),
-	(2, 'Antoine' , 'Deb' );
-
-INSERT INTO appointment(`a_id`,`p_id`,`d_id`,`c_id`,`date`)
-VALUES
-(1, 1 , 3, 3, '2020-02-14'),
-	(2, 2 , 6, 6, '2020-03-22' );
-
-INSERT INTO treatment(`t_id`,`a_id`,`p_id`,`d_id`,`description`,`price`)
-VALUES
-(1, 1 , 1, 3, 'Tooth Repair', 150.00),
-	(2, 2 , 2, 6, 'Remove gums', 90.00);
+    ('Dentist A', 'Dentist A', 1, 1),
+    ('Dentist B', 'Dentist B', 1, 2),
+    ('Assistant A', 'Assistant A', 2, 1),
+    ('Assistant B', 'Assistant B', 2, 1),
+    ('Assistant C', 'Assistant C', 2, 2),
+    ('Receptionist A', 'Receptionist B', 3, 1),
+    ('Receptionist B', 'Receptionist B', 3, 1),
+    ('Receptionist C', 'Receptionist C', 3, 2);
 
 
-INSERT INTO bill(`b_id`,`p_id`,`t_id`,`price`,`paid`)
-VALUES
-(1, 1 , 1, 150.00,1),
-	(2, 2 , 2, 90.00,0);
+INSERT INTO `treatment` (`TreatmentName`, `TreatmentStandardPrice`) VALUES
+    ('Treatment 1', 50),
+    ('Treatment 2', 75),
+    ('Treatment 3', 60),
+    ('Treatment 4', 100);
+
+
+INSERT INTO `patient` (`PatientFirstName`, `PatientLastName`, `PatientDOB`) VALUES
+	('Patient A First Name', 'Patient A Last Name', '1980-01-01'),
+    	('Patient B First Name', 'Patient B Last Name', '1985-05-01'),
+ 	 ('Patient C First Name', 'Patient C Last Name', '1990-08-01'),
+    	('Patient D First Name', 'Patient D Last Name', '1995-11-01'),
+   	 ('Patient E First Name', 'Patient E Last Name', '2000-04-01');
+
+
+INSERT INTO `appointment` (`PatientID`, `AppointmentDateTime`, `ClinicID`, `DentistEmployeeID`, `CreatedByEmployeeID`, `IsMissedAppointment`) VALUES
+    (1, '2019-01-05 10:00:00', 1, null, 6, 0),
+    (1, '2019-03-05 12:00:00', 1, 1, 7, 0),
+    (2, '2019-05-05 14:00:00', 2, null, 8, 0),
+    (3, '2019-06-10 11:00:00', 1, 1, 6, 0),
+    (2, '2019-08-05 14:00:00', 2, 2, 8, 1),
+    (3, '2019-09-10 11:00:00', 2, 2, 8, 0),
+    (4, '2019-09-11 10:30:00', 2, 2, 8, 0),
+    (5, '2019-12-20 11:30:00', 1, 1, 7, 0),
+    (1, '2020-04-20 13:00:00', 1, 1, 7, null),
+    (5, '2020-05-01 11:30:00', 1, 1, 7, null);
+
+
+INSERT INTO `bill` (`AppointmentID`, `PaidAmount`, `PaymentDateTime`, `BillProcessedByEmployeeID`) VALUES
+(1,160,'2019-01-05 12:00:00',6),
+	(2,325,'2019-03-05 14:00:00',7),
+	(3,140,'2019-05-05 16:00:00',8),
+	(4,235,'2019-06-10 13:00:00',7),
+	(6,230,'2019-09-10 13:00:00',8),
+	(7,200,'2019-09-11 12:30:00',8),
+	(8,380,'2019-12-20 13:30:00',6);
+
+
+INSERT INTO `billitem`(`BillID`, `TreatmentID`, `TreatmentPrice`, `TreatmentUnitCount`, `TreatmentAssignedByEmployeeID`, `TreatmentAssignedDateTime`, `TreatmentExecutedByEmployeeID`, `TreatmentExecutedDateTime`) VALUES
+	(1,1,50,2,1,'2019-01-05 11:00:00',3,'1900-01-03 00:00:00'),
+	(1,2,60,1,1,'2019-01-05 11:00:00',1,'1900-01-01 00:00:00'),
+	(2,1,50,1,1,'2019-03-05 13:00:00',4,'1900-01-04 00:00:00'),
+	(2,2,75,1,1,'2019-03-05 13:00:00',4,'1900-01-04 00:00:00'),
+	(2,4,100,2,1,'2019-03-05 13:00:00',1,'1900-01-01 00:00:00'),
+	(3,3,50,1,2,'2019-05-05 15:00:00',5,'1900-01-05 00:00:00'),
+	(3,4,90,1,2,'2019-05-05 15:00:00',2,'1900-01-02 00:00:00'),
+	(4,1,50,2,1,'2019-06-10 12:00:00',3,'1900-01-03 00:00:00'),
+	(4,2,75,1,1,'2019-06-10 12:00:00',4,'1900-01-04 00:00:00'),
+	(4,3,60,1,1,'2019-06-10 12:00:00',1,'1900-01-01 00:00:00'),
+	(5,1,50,1,2,'2019-09-10 12:00:00',5,'1900-01-05 00:00:00'),
+	(5,4,90,2,2,'2019-09-10 12:00:00',2,'1900-01-02 00:00:00'),
+	(6,4,100,2,2,'2019-09-11 11:30:00',5,'1900-01-05 00:00:00'),
+	(7,1,50,2,1,'2019-12-20 12:30:00',3,'1900-01-03 00:00:00'),
+	(7,3,60,3,1,'2019-12-20 12:30:00',4,'1900-01-04 00:00:00'),
+	(7,4,100,1,1,'2019-12-20 12:30:00',1,'1900-01-01 00:00:00');

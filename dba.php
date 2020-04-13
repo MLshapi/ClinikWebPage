@@ -42,6 +42,7 @@
     <li><a href="index.php">Select Queries</a></li>
     <li><a href="dmp.php">Data Manipulation Page</a></li>
     <li><a href="dba.php">Database Administrator Page</a></li>
+	<li><a href="billing.php">Billing Page</a></li>
   </ul>
 </nav>
 <br>
@@ -50,15 +51,26 @@
 <form action="dba.php" method="POST">
 	<textarea type="text" name="query" placeholder="Insert query and run" rows="5" cols="100"></textarea>
 	<br>
-	<button type="submit" name="submit">Add Patient</button>
+	<button type="submit" name="submit">Run query</button>
 </form>
 
 <?php
+
+	function sql_format_query($raw_query) {
+	  $keywords = array("select", "from", "where", "order by", "group by", "insert into", "update", "inner join");
+	  foreach ($keywords as $keyword) {
+	    if (preg_match("/($keyword *)/i", $raw_query, $matches)) {
+	      $raw_query = str_replace($matches[1], "<br>" . strtoupper($matches[1]) . "  ", $raw_query);
+	    }
+	  }
+	  return $raw_query;
+	}
 	if(isset($_POST)){
-		if($_POST['query'])
+		if((!empty($_POST)) && $_POST['query'])
 		{
 			@$query = $_POST['query'] ?? '';
-			echo $query;
+			$formatted = sql_format_query($query);
+			echo $formatted;
 			$result = mysqli_query($conn, $query);
 
 			//if it is a select --> display table
@@ -73,18 +85,25 @@
 					while($row = mysqli_fetch_assoc($result))
 					{
 						$toPrint .= "<tr>";
-						
+						$attribute = "";
+						$data = "";
 						foreach($row as $k => $v){
 							if($i == 0)
 							{
-								$toPrint .= "<td>" . $k . "</td>";
+								$attribute .= "<td>" . $k . "</td>";
 							}
-							else
-							{
-								$toPrint .= "<td>" . $v . "</td>";
-							}
+							
+							$data .= "<td>" . $v . "</td>";
+							
 
 					 	}
+					 	if($i == 0)
+					 	{
+					 		$toPrint .= $attribute;
+					 		$toPrint .= "</tr>";
+					 		$toPrint .= "<tr>";
+					 	}
+					 	$toPrint .= $data;
 						$toPrint .= "</tr>";
 						$i++;
 					}
@@ -93,7 +112,7 @@
 				}
 				else
 				{
-					$toPrint .= "No result";
+					$toPrint .= "<br><h2>No result</h2>";
 				}
 				
 				echo $toPrint;
