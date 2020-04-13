@@ -1,9 +1,9 @@
+
 <?php
 
 $dbServername = "localhost";
-$dbUsername = "dbUser";
-$dbPassword = "123"; // default root, nothing for password for xxamp
-$dbName = "353test";
+$dbUsername = "root";
+$dbPassword = ""; // default root, nothing for password for xxamp
+$dbName = "comp353";
 
 $conn = mysqli_connect($dbServername,$dbUsername,$dbPassword,$dbName);
-
