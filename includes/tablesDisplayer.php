@@ -149,7 +149,7 @@
 				    INNER JOIN employeetitle et ON
 						 e.EmployeeTitleID = et.EmployeeTitleID
 					INNER JOIN Clinic cl ON
-						CL.ClinicID = e.ClinicID
+						cl.ClinicID = e.ClinicID
 				WHERE
 					et.EmployeeTitle = 'Dentist';";
 		printQueryTable($sql, $conn);
@@ -174,13 +174,12 @@
 	{
 		global $conn;
 		$date = $post['date'] ?? 0;
-		echo "$date";
 		$sql = "SELECT 
 					a.AppointmentID, c.ClinicName, a.AppointmentDateTime, e.EmployeeFirstName, p.patientFirstName
 				FROM
 					clinic as c, appointment as a, employee as e, patient as p
 				WHERE
-					DAY(a.appointmentDateTime) = DAY('$date') AND a.ClinicID = c.ClinicID AND e.EmployeeID = a.DentistEmployeeID AND p.PatientID = a.PatientID;";
+					a.appointmentDateTime BETWEEN '$date 00:00:00' AND '$date 23:59:59' AND a.ClinicID = c.ClinicID AND e.EmployeeID = a.DentistEmployeeID AND p.PatientID = a.PatientID;";
 		printQueryTable($sql, $conn);
 	}
 	function displayQueryFour($post)
